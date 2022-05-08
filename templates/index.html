@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebHook-me</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
+        <style>
+            body {
+              background-color: white;
+              font-family: 'Quicksand', sans-serif;
+            }
+            
+            a {
+                color: rgb(29, 29, 29);
+            }
+
+            .title {
+              font-weight: bold;
+            }
+
+            h1, h2 {
+              color: rgb(29, 29, 29);
+              text-align: center;
+            }
+
+            .new_session_box {
+                border: 1px solid black;
+                background-color: azure;
+                text-align: center;
+                margin: 20px;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 20px;
+                width: 80%;
+            }
+
+            .listen_session_box {
+                margin-left: auto;
+                margin-right: auto;
+                padding: 0px;
+                width: 80%;
+            }
+
+            .request_box {
+                border: 1px solid black;
+                background-color: rgb(188, 253, 207);                
+                text-align: center;
+                margin: 20px;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 20px;
+                width: 80%;
+            }
+
+            .error_box {
+                border: 1px solid black;
+                background-color: rgb(255, 133, 133);
+                text-align: center;
+                margin: 20px;
+                margin-left: auto;
+                margin-right: auto;
+                padding: 20px;
+                width: 80%;
+            }
+
+            .webhook_link{
+                font-size: 150%;
+                font-weight: bold;
+            }
+
+            .listen_link{
+                font-size: 130%;
+                font-weight: bold;
+            }
+
+            table{
+                width: 100%;
+                border-collapse: collapse;
+                text-align: left;
+            }
+
+            .table_key{
+                vertical-align: top;
+                width: 20%;
+                padding: 10px;
+                font-weight: bold;
+            }
+
+            .table_value{
+                vertical-align: top;
+                padding: 10px;
+            }
+
+            .top_align{
+                vertical-align: top;
+            }
+
+            ul {
+                margin-top: 0px;
+                margin-bottom: 0px;
+            }
+
+            pre {
+                background-color: rgb(185, 185, 185);
+                padding: 5px;
+            }
+            </style>
+    </head>
+    <body>
+
+        <h1 class="title">WebHook me!</h1>
+
+        {{ if eq .Error "" }}
+            {{ if .Initialized }}
+
+                <h2>{{ .BasePath }}send/{{ .Session.Id }}</h2>
+
+                {{ if not .Session.Responses }} 
+                    <div class="new_session_box">
+                        No requests yet received
+                    </div>
+                {{ end }}
+
+                {{ range .Session.Responses }}
+                    <div class="request_box">
+                        <table >
+                            <tbody>
+                                <tr>
+                                    <td class="table_key">Time</td>
+                                    <td class="table_value">{{ .Time }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table_key">Method</td>
+                                    <td class="table_value">{{ .Method }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table_key">Path</td>
+                                    <td class="table_value">{{ .Path }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table_key">Headers</td>
+                                    <td class="table_value">
+                                        <table>
+                                            {{ range $Key, $Values := .Header }}
+                                                <tr>
+                                                    <td class="top_align" width="20%">{{ $Key }}</td>
+                                                    <td class="top_align">
+                                                        {{ range $Values}}
+                                                            <div style="margin-right: 5px;">{{ . }}</div>
+                                                        {{ end }}
+                                                    </td>
+                                                </tr> 
+                                            {{ end }}
+                                            </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="table_key">Query String</td>
+                                    <td class="table_value">
+                                        {{ if .Query }}
+                                            <table>
+                                            {{ range $Key, $Values := .Query }}
+                                                <tr>
+                                                    <td class="top_align" width="20%">{{ $Key }}</td>
+                                                    <td class="top_align">[
+                                                        {{ range $Values}}
+                                                            <span style="margin-right: 5px;">{{ . }} ,</span>
+                                                        {{ end }}
+                                                    ]
+                                                    </td>
+                                                </tr> 
+                                            {{ end }}
+                                            </table>
+                                        {{ end }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="table_key">Body</td>
+                                    <td class="table_value">
+                                        {{ if .Body }}
+                                            <pre class=".body">{{ .Body }}</pre>
+                                        {{ end }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {{ end }}
+
+            {{ else }}
+                <div class="new_session_box">
+                    <p>Send request to</p>
+                    
+                    <p class="webhook_link">{{ .BasePath }}send/{{ .Session.Id }}</p>
+                    
+                    <p class="expiration">Valid until {{ .Session.Expires }} </p>
+
+                    <p class="listen_link">Check the requests <a href="{{ .BasePath }}/listen/{{ .Session.Id }}">here</a></p>
+                </div>
+            {{ end }}
+        {{ else }}
+            <div class="error_box">
+                <h2>{{ .Error }}</h2>
+                <p class="listen_link">Create a new web-hook <a href="{{ .BasePath }}/">here</a></p>
+            </div>
+        {{ end }}
+    </body>
+</html>
