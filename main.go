@@ -19,6 +19,7 @@ var port string
 var basePath string
 var requestCounter int = 0
 var globalMaxRequestPerMinute int = 60
+var maxBodySizeBytes int = 500000
 
 // DATA TYPES
 
@@ -95,7 +96,8 @@ func Collect(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 		io.Copy(&bodyBuffer, r.Body)
 	}
-	if len(bodyBuffer.Bytes()) > 10 {
+	if len(bodyBuffer.Bytes()) > maxBodySizeBytes {
+		w.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
@@ -166,6 +168,7 @@ func main() {
 	flag.StringVar(&port, "port", "8080", "Port to expose")
 	flag.IntVar(&sessionTTL, "ttl", 300, "Sessions TTL (sec)")
 	flag.IntVar(&sessionTTL, "global-max-request-per-minute", 60, "how many request per minute the server can accept")
+	flag.IntVar(&maxBodySizeBytes, "max-body-size", 500000, "Max size of the body in bytes")
 
 	flag.Parse()
 
