@@ -167,7 +167,7 @@ func main() {
 	flag.StringVar(&basePath, "base", "http://localhost", "Base path to build the links")
 	flag.StringVar(&port, "port", "8080", "Port to expose")
 	flag.IntVar(&sessionTTL, "ttl", 300, "Sessions TTL (sec)")
-	flag.IntVar(&sessionTTL, "global-max-request-per-minute", 60, "how many request per minute the server can accept")
+	flag.IntVar(&globalMaxRequestPerMinute, "global-max-request-per-minute", 60, "how many request per minute the server can accept")
 	flag.IntVar(&maxBodySizeBytes, "max-body-size", 500000, "Max size of the body in bytes")
 
 	flag.Parse()
