@@ -50,6 +50,7 @@ var sessions map[string]*Session
 
 func init() {
 	sessions = make(map[string]*Session)
+	rand.Seed(time.Now().UTC().UnixNano())
 }
 
 // HANDLERS
