@@ -39,10 +39,11 @@ type Session struct {
 }
 
 type DataForTemplates struct {
-	Initialized bool
-	BasePath    string
-	Session     Session
-	Error       string
+	Initialized        bool
+	BasePath           string
+	Session            Session
+	Error              string
+	RequestsLastMinute int
 }
 
 // IN MEMORY STORAGE
@@ -65,9 +66,10 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	session := newSession()
 
 	data := DataForTemplates{
-		Initialized: false,
-		BasePath:    basePath,
-		Session:     session,
+		Initialized:        false,
+		BasePath:           basePath,
+		Session:            session,
+		RequestsLastMinute: requestCounter,
 	}
 
 	t := template.Must(template.ParseFiles("./templates/index.html"))

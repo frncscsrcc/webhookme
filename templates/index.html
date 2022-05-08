@@ -198,6 +198,7 @@
 
                     <p class="listen_link">Check the requests <a href="{{ .BasePath }}/listen/{{ .Session.Id }}">here</a></p>
                 </div>
+                <div style="font-size: 80%; text-align:center; margin-top: 50px;">{{ .RequestsLastMinute }} requests in the last minute
             {{ end }}
         {{ else }}
             <div class="error_box">
