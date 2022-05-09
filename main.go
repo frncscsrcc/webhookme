@@ -20,6 +20,7 @@ var basePath string
 var requestCounter int = 0
 var globalMaxRequestPerMinute int = 60
 var maxBodySizeBytes int = 500000
+var linkLenght int = 8
 
 // DATA TYPES
 
@@ -171,6 +172,7 @@ func main() {
 	flag.IntVar(&sessionTTL, "ttl", 300, "Sessions TTL (sec)")
 	flag.IntVar(&globalMaxRequestPerMinute, "global-max-request-per-minute", 60, "how many request per minute the server can accept")
 	flag.IntVar(&maxBodySizeBytes, "max-body-size", 500000, "Max size of the body in bytes")
+	flag.IntVar(&linkLenght, "link-lenght", 8, "Size of the link's random token")
 
 	flag.Parse()
 
@@ -188,7 +190,7 @@ func main() {
 func newSession() Session {
 	ttl := time.Duration(sessionTTL) * time.Second
 	s := Session{
-		Id:        randomString(32),
+		Id:        randomString(linkLenght),
 		Expires:   time.Now().Add(ttl).Format(time.RFC3339),
 		Responses: make([]Response, 0),
 	}
